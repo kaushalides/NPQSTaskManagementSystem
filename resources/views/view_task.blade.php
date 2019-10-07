@@ -42,6 +42,8 @@ $('#secpopup').change(function(){
   });
 });
 var x = document.getElementById("reminderlbl");
+var addrem = document.getElementById("addrem");
+
 var y = document.getElementById("reminder");
   if (x.style.display === "none") {
     x.style.display = "block";
@@ -53,7 +55,9 @@ var y = document.getElementById("reminder");
   } else {
     y.style.display = "none";
   }
-
+  //addrem.style.display = "none";
+  //$("addrem").hide();
+  addrem.style.visibility = 'hidden'; 
 
 } );
 function searchSection($nmbr,$search){
@@ -94,6 +98,7 @@ function deleteRecord(){
         }
     });
 
+    addrem.style.visibility = 'hidden'; 
 
 }
 function updateRecord(){
@@ -128,6 +133,8 @@ $.ajax({
         error:function(){
         }
     });
+    addrem.style.visibility = 'hidden'; 
+
 }
  
   
@@ -153,8 +160,11 @@ function popupModel(btnid){
   document.getElementById('employeepopup').options.length = 0;
   document.getElementById('task_idpopup').value = taskid;
   document.getElementById('officer_idpopup').value = officerid;
-
-  
+  document.getElementById("reminder").value ="";
+  var x = document.getElementById("reminderlbl");
+  var y = document.getElementById("reminder");
+  x.style.display = "none";
+  y.style.display = "none";
   $('#secpopup').find('option').not(':first').remove();
   $('#employeepopup').find('option').not(':first').remove();
 
@@ -214,35 +224,30 @@ function popupModel(btnid){
        if(msg['data'] != null){
          len = msg['data'].length;
       }
+
         //closeModel();
         if(len>0){
-          var fullnote;
+          var fullnote = "";
           for(var i=0; i<len; i++){
             var name = msg['data'][i].reminder_note;
             var added_date = msg['data'][i].reminder_added_date;
 
 
-            fullnote=note +'\n' +name+' Added on '+added_date;
+            fullnote=name+' Added on '+added_date+'\n' +fullnote ;
             //document.getElementById("serialnmbr").value =serial_no;
-var note =name+' Added on '+added_date;
+          
 
           }
           document.getElementById("reminder").value =fullnote;
 
-          var x = document.getElementById("reminderlbl");
-        var y = document.getElementById("reminder");
+       
 
-
-
+        document.getElementById("reminder_status").value = 1;
         //refpopup
         x.style.display = "block";
         y.style.display = "block";
 
-
-
         }
-
- 
         },
         complete: function (jqXHR, textStatus) {
         },
@@ -251,13 +256,68 @@ var note =name+' Added on '+added_date;
     });
   modal.style.display = "block";
 }
-  
+  function addReminder(){
+    var reminder_status = document.getElementById("reminder_status").value;
+    var addrem = document.getElementById("addrem");
+addrem.style.visibility = 'visible'; 
+    document.getElementById("reminder_status").value = 0;
+
+
+  }
 function closeModel(){
   var modal = document.getElementById("popup");
   modal.style.display = "none";
+  addrem.style.visibility = 'hidden'; 
+
 }
+function addNewReminder(){
+  var taskid = document.getElementById("task_idpopup").value;
+  var reminder = document.getElementById("rempopup").value;
 
+  $.ajax({
+        type: 'POST',
+        url: '/addReminders',
+        data: {
+        "_token": "{{ csrf_token() }}",
+        "taskid": taskid,
+        "reminder_note":reminder
+        },
+        success: function(msg) {
 
+     var modal = document.getElementById("popup");
+  modal.style.display = "none";
+        },
+        complete: function (jqXHR, textStatus) {
+          location.reload(true);
+
+        },
+        error:function(){
+        }
+    });
+    }
+function completed(btnid){
+  const splitString = btnid.split("_");
+
+  var taskid = document.getElementById("taskid_"+splitString[3]).value;
+  $.ajax({
+        type: 'POST',
+        url: '/taskCompleted',
+        data: {
+        "_token": "{{ csrf_token() }}",
+        "taskid": taskid
+        },
+        success: function(msg) {
+
+    
+        },
+        complete: function (jqXHR, textStatus) {
+          location.reload(true);
+
+        },
+        error:function(){
+        }
+    });
+}
 </script>
 <div class="container" style="margin-left:15%; height:100%">
     <div class="text-center">
@@ -349,9 +409,26 @@ function closeModel(){
         <textarea readonly class="form-control"  rows="2" name="reminder" id="reminder" ></textarea>
     </div>
     </div>
+    <div name ="addrem" id="addrem"class="row">
+
+<div class="form-group col-md-2" style="align:left">
+  <label class="control" for="rempopup_id">Add Reminder:</label>
+  </div>
+  <div class="form-group col-md-4">
+    <input type="text"   class="form-control" id="rempopup"  name="rempopup">
+    </div>
+
+    <div class="form-group col-md-2">
+
+    <button type="button" onClick="addNewReminder();" class="btn btn-primary">Add New Reminder</button>
+
+</div>
+
+</div>
 
 
 
+    <input type="hidden" name="reminder_status" id="reminder_status" >
 
 
       <input type="hidden" name="title" id="title" >
@@ -361,7 +438,7 @@ function closeModel(){
     <br>
     <div class="form-group">        
       <div class="col-sm-offset-2 col-sm-10"> 
-      <button type="button" class="btn btn-info">Add Reminder</button>
+      <button type="button" onClick="addReminder();" class="btn btn-info">Add Reminder</button>
 
         <button type="button" onClick="updateRecord();" class="btn btn-success">Update</button>
         <button type="button" onClick="deleteRecord();" class="btn btn-danger">Delete</button>
@@ -397,6 +474,7 @@ function closeModel(){
         <th>Officer</th>
         <th>Reference</th>
         <th>Action</th>
+        <th>Status</th>
 
         </tr>
         </thead>
@@ -425,9 +503,22 @@ $x=0;
 <input type="hidden" id="taskid_<?php echo $x; ?>" value="<?php echo $task->tasks_id ?>">
 <input type="hidden" id="officerid_<?php echo $x; ?>" value="<?php echo $task->officer_id ?>">
 <input type="hidden" id="section_id_<?php echo $x; ?>" value="<?php echo $task->section_id ?>">
+<?php
+if($task->status){}
+?>
+<button class="btn btn-primary btn-xs"  name="btnPopup_<?php echo $x; ?>" id="btnPopup_<?php echo $x; ?>" onClick="popupModel(this.id);"><i class="fa fa-pencil fa-xs"></i></button>
+</td>
 
-<button class="btn btn-primary" name="btnPopup_<?php echo $x; ?>" id="btnPopup_<?php echo $x; ?>" onClick="popupModel(this.id);"><i class="fa fa-pencil"></i></button>
-
+<td>
+<?php
+if($task->status){
+?>
+<button class="btn btn-success btn-xs" name="btn_sus_Popup_<?php echo $x; ?>" id="btn_sus_Popup_<?php echo $x; ?>" onClick="completed(this.id);"><i class="fa fa-check fa-xs">Done</i></button>
+<?php
+} else{?>
+<button class="btn btn-danger btn-xs" name="btn_sus_Popup_<?php echo $x; ?>" id="btn_sus_Popup_<?php echo $x; ?>" onClick="completed(this.id);"><i class="fa fa-check fa-xs">UnDo</i></button>
+<?php
+}?>
     </td>
     
 </tr>

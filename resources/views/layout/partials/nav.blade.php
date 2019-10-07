@@ -3,7 +3,7 @@
 /* Fixed sidenav, full height */
 .sidenav {
   height: 100%;
-  width: 200px;
+  width: 180px;
   position: fixed;
   z-index: 1;
   top: 0;

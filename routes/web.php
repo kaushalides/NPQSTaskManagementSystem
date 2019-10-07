@@ -33,6 +33,9 @@ Route::get('/demo', function () {
 
  Route::post('/sendemail','MailController@basic_email');
  Route::post('/getReminders','TaskController@getReminders');
+ Route::post('/addReminders','TaskController@addReminders');
+ Route::post('/taskCompleted','TaskController@taskCompleted');
+
  Route::post('/delTask','TaskController@deleteTask'); 
  Route::post('/updateTask','TaskController@updateTask');
  Route::get('/getSections', 'EmployeeController@getSections');

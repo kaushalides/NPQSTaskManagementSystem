@@ -5,6 +5,7 @@ use \Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use App\Tasks;
+
 class TaskController extends Controller
 {
     public function ongoingTask(){
@@ -78,7 +79,7 @@ $name = 'Ongoing';
             ]);
         return true;
     }
-    public function updateTask(Request $req){
+    public function updateTask(Request $req){ 
         $taskid= $req->taskid;
         $serialnmbr= $req->serialnmbr;
         $allocated_date= $req->allocated_date;
@@ -99,4 +100,34 @@ $name = 'Ongoing';
             ]);
         return true;
     }
+    public function addReminders(Request $request){
+        $task = $request->taskid;
+        $reminder_note = $request->reminder_note;
+        $date=  Carbon::now()->format('Y-m-d');
+
+           
+            DB::insert('insert into reminder (task_id,reminder_note,reminder_added_date) values(?,?,?)',[$task,$reminder_note,$date]);
+                  return redirect()->back();
+    }
+    public function taskCompleted(Request $req){ 
+        $taskid= $req->taskid;
+        $date=  Carbon::now()->format('Y-m-d');
+        if($taskid == 1){
+            DB::table('tasks')->where('tasks_id', $taskid)->update([
+
+                'updated_at'=>$date,
+                
+                'status' => 0
+                ]);
+        }else{
+        DB::table('tasks')->where('tasks_id', $taskid)->update([
+
+            'updated_at'=>$date,
+            
+            'status' => 1
+            ]);
+    }
+    return true;
+
+}
 }
