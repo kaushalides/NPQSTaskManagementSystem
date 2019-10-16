@@ -23,6 +23,8 @@
 
 
 <form class="form-horizontal" name="popup" id="popup" action="">
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <div class="text-center">
 <h1 class="text-uppercase" style="color:black;">Send Tasks</h1>
 
@@ -30,7 +32,7 @@
     <div class="form-group">
       <label class="control-label col-sm-2" for="emailfrom">From:</label>
       <div class="col-sm-10">
-        <input type="email" value="test.npqs@gmail.com" readonly class="form-control" id="emailfrom"  name="emailfrom">
+        <input type="email" value="newtask.npqs@gmail.com" readonly class="form-control" id="emailfrom"  name="emailfrom">
       </div>
     </div>
     <div class="form-group">
@@ -60,8 +62,8 @@
     
     <div class="form-group">        
       <div class="col-sm-offset-2 col-sm-10"> 
-        <button type="submit" class="btn btn-success">Submit</button>
-        <button type="button" onClick="closeModel();" data-dismiss="modal1" class="btn btn-danger">Close</button>
+        <button type="button" onclick= "sendMail()" class="btn btn-success">Send</button>
+        <button type="button" onclick="closeModel()" data-dismiss="modal1" class="btn btn-danger">Close</button>
 
       </div>
     </div>
@@ -70,38 +72,21 @@
 </div>
 
 </div>
-<script>
-var modal = document.getElementById("EmailModal");
-
-var btn = document.getElementById("myBtn");
-
- $(document).ready(function(){
-   
-  $('.sandbox-container').datepicker({  
-              format: 'yyyy-mm-dd',
-              todayHighlight:'TRUE',
-    startDate: '-0d',
-    autoclose: true,
-              });  
-  $('#popup').on('submit', function(e) {
-    //alert("here");
-    $('#spin').show();
-
-var emailto = document.getElementById("emailto").value;
+<script type="text/javascript">
+function sendMail(){
+  var emailto = document.getElementById("emailto").value;
 var title = document.getElementById("title").value;
 var task_assign = document.getElementById("task_assign").value;
 var all_date = document.getElementById("all_date").value;
 var emailfrom = document.getElementById("emailfrom").value;
 var dl = document.getElementById("dl").value;
 var emailsub = document.getElementById("emailsub").value;
-
 var serial_no =document.getElementById("serial_no").value;
 var officer_id =document.getElementById("officer_id").value;
 var references =document.getElementById("references").value;
 
-    e.preventDefault(); 
-    $.ajax({
-        type: 'POST',
+$.ajax({
+        type: "POST",
         url: '/sendemail',
         data: {
         "_token": "{{ csrf_token() }}",
@@ -118,14 +103,14 @@ var references =document.getElementById("references").value;
 
         },
         beforeSend: function() {
-        // setting a timeout
        $('.spin').show();
         document.getElementById("popup").style.display = "none";
 
     },
         success: function(msg) {
-        //alert(msg);
-        closeModel();
+          location.reload(true);
+
+        //closeModel();
 
         },
         complete: function (jqXHR, textStatus) {
@@ -137,7 +122,37 @@ var references =document.getElementById("references").value;
 
         }
     });
-});
+
+}
+var modal = document.getElementById("EmailModal");
+
+var btn = document.getElementById("myBtn");
+
+ $(document).ready(function(){
+   
+  var deadline=$('input[name="deadline"]'); //our date input has the name "date"
+  var allocated_date=$('input[name="allocated_date"]'); 
+
+      var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
+      var options={
+        format: 'yyyy/mm/dd',
+        container: container,
+        todayHighlight: true,
+        orientation: 'auto',
+        changeMonth: true,
+        changeYear: true,
+        autoclose: true,
+        startDate: new Date()
+
+      };
+      deadline.datepicker(options);
+      allocated_date.datepicker(options);
+  
+  //$('#popup').on('submit', function(e) {
+    //alert("here");
+    //e.preventDefault(); 
+  
+//});
  
 // Department Change
 $('#section').change(function(){
@@ -205,6 +220,7 @@ $('#officer').change(function(){
 
  function viewemail() {
   $('#spin').hide();
+
   var officer = document.getElementById("officer").value;
    var x = document.getElementById("officer").selectedIndex;
   var y = document.getElementById("officer").options;
@@ -237,7 +253,7 @@ function closeModel(){
 
 </script>
 
-    <form method="post" name="addform" id="addform" action="/saveTasks" style="margin-right:8%">
+    <form class="text-center border border-light p-5" method="post" name="addform" id="addform" action="/saveTasks" style="margin-right:8%">
     {{csrf_field()}}
     <div class="row"> 
 
@@ -247,7 +263,7 @@ function closeModel(){
 
         <div class="col-md-6" style="text-align: left";>
           <select class="form-control dynamic" data-dependent="officer" id="section" name='section'>
-            <option selected>Employee Section</option>
+            <option value="0" selected>Employee Section</option>
               @foreach($sections as $section)
             <option value="{{ $section['section_id'] }}">{{ $section['section'] }}</option>
               @endforeach
@@ -261,12 +277,8 @@ function closeModel(){
     <div class="row"> 
     <div class="col-md-6" id="date_picker" name="date_picker">
 
-<input type="text" class="date form-control" id="allocated_date" name="allocated_date" placeholder= "Enter Deadline Date Here">
-<script type="text/javascript">  
-$('.date').datepicker({  
-   format: 'yyyy-mm-dd'  
- });  
-</script> 
+<input type="text" class="date form-control" id="allocated_date" name="allocated_date" placeholder= "Enter Allocated Date Here">
+
 </div>
         
         <div class="col-md-6" style="text-align: left";>
@@ -281,12 +293,11 @@ $('.date').datepicker({
     <div class="row"> 
 
     <div class="col-md-6" style="text-align: left";>
-          <textarea class="form-control" required rows="3" name="task" id="task" placeholder= "Task Here">
-          </textarea>
+          <textarea class="form-control" placeholder= "Task Here" required rows="4" cols="50" name="task" id="task" ></textarea>
         </div>
         <div class="col-md-6  ">
 
-<input type="text" class="form-control" name="references" placeholder= "Enter References Here">
+<input type="text" class="form-control" id="references" name="references" placeholder= "Enter References Here">
 </div>
       
     </div>
@@ -296,19 +307,10 @@ $('.date').datepicker({
   <div class="col-md-6" id="date_picker" name="date_picker">
 
 <input type="text" class="date form-control" id="deadline" name="deadline" placeholder= "Enter Deadline Date Here">
-<script type="text/javascript">  
-$('.date').datepicker({  
-   format: 'yyyy-mm-dd'  
- });  
-</script> 
+
 </div>
 
-      <div class="col-md-4  ">
-        <label for="upload_ref" class="form-control">Upload file</label>
-      </div>
-      <div class="col-md-2   ">
-        <button type="button" class="btn btn-info">Upload file</button>
-      </div>
+
   </div>
 
         <br/>        <br/>

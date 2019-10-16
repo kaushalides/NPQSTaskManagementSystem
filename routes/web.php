@@ -11,12 +11,16 @@
 |
 */
 
-Route::get('/login', function () {
-    return view('login');
-});
+
 Route::get('/tasks', function () {
     return view('task');
 });
+Route::get('/add_sec', function () {
+    return view('add_section');
+});
+Route::get('/add_emp','EmployeeController@addNewEmployee');
+Route::post('/sendemail','MailController@basic_email');
+
 Route::post('/saveTasks','TaskController@store');
 Route::get('/demo', function () {
     return view('demo');
@@ -31,7 +35,6 @@ Route::get('/demo', function () {
  Route::get('/getEmployees/{id}', 'EmployeeController@getEmployees');
  Route::get('/getAllEmployees', 'EmployeeController@getAllEmployees');
 
- Route::post('/sendemail','MailController@basic_email');
  Route::post('/getReminders','TaskController@getReminders');
  Route::post('/addReminders','TaskController@addReminders');
  Route::post('/taskCompleted','TaskController@taskCompleted');
@@ -39,8 +42,10 @@ Route::get('/demo', function () {
  Route::post('/delTask','TaskController@deleteTask'); 
  Route::post('/updateTask','TaskController@updateTask');
  Route::get('/getSections', 'EmployeeController@getSections');
+ Route::post('/addemployee', 'EmployeeController@addemployee');
 
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::post('/addsection', 'EmployeeController@addSection');

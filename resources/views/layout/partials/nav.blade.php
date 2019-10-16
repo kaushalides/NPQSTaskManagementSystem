@@ -76,7 +76,8 @@
     <a href="/view_completed">Completed Tasks</a>
 
   </div>
-  <a href="#contact">Add Employees</a>
+  <a href="/add_emp">Add Employees</a>
+  <a href="/add_sec">Add Section</a>
 
 </div>
 
