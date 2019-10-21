@@ -36,7 +36,7 @@ Route::get('/demo', function () {
  Route::get('/getAllEmployees', 'EmployeeController@getAllEmployees');
 
  Route::post('/getReminders','TaskController@getReminders');
- Route::post('/addReminders','TaskController@addReminders');
+ Route::post('/addReminders','MailController@addReminders');
  Route::post('/taskCompleted','TaskController@taskCompleted');
 
  Route::post('/delTask','TaskController@deleteTask'); 
@@ -49,3 +49,5 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::post('/addsection', 'EmployeeController@addSection');
+Route::post('/get_report', 'TaskController@getReport');
+Route::get('/customer/print-pdf/{name}', [ 'as' => 'customer.printpdf', 'uses' => 'CustomerController@printPDF']);

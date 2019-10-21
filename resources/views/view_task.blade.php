@@ -2,6 +2,25 @@
 @section('content')
 <script type="text/javascript">
   $(document).ready(function() {
+   
+   var enddate=$('input[name="enddate"]'); //our date input has the name "date"
+   var startdate=$('input[name="startdate"]'); 
+ 
+       var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
+       var options={
+         format: 'yyyy/mm/dd',
+         container: container,
+         todayHighlight: true,
+         orientation: 'auto',
+         changeMonth: true,
+         changeYear: true,
+         autoclose: true,
+         startdate: new Date()
+ 
+       };
+       enddate.datepicker(options);
+       startdate.datepicker(options);
+       
       var modal = document.getElementById("popup");
       modal.style.display = "none";
       $('#tbl_task').DataTable({
@@ -260,7 +279,7 @@ function popupModel(btnid){
     var reminder_status = document.getElementById("reminder_status").value;
     var addrem = document.getElementById("addrem");
 addrem.style.visibility = 'visible'; 
-    document.getElementById("reminder_status").value = 0;
+    //document.getElementById("reminder_status").value = 0;
 
 
   }
@@ -271,9 +290,10 @@ function closeModel(){
 
 }
 function addNewReminder(){
+  var spinner = $('#loader');
+
   var taskid = document.getElementById("task_idpopup").value;
   var reminder = document.getElementById("rempopup").value;
-
   $.ajax({
         type: 'POST',
         url: '/addReminders',
@@ -283,12 +303,17 @@ function addNewReminder(){
         "reminder_note":reminder
         },
         success: function(msg) {
+      var modal = document.getElementById("popup");
+      modal.style.display = "none";
+        },beforeSend: function() {
+    spinner.show();
 
-     var modal = document.getElementById("popup");
-  modal.style.display = "none";
+
         },
         complete: function (jqXHR, textStatus) {
-          location.reload(true);
+          spinner.hide();
+
+        location.reload(true);
 
         },
         error:function(){
@@ -319,7 +344,7 @@ function completed(btnid){
     });
 }
 </script>
-<div class="container" style="margin-left:15%; height:100%">
+<div class="container"  style="margin-left:15%; margin-right:10%; height:100%">
     <div class="text-center">
 
 <h1 class="text-uppercase" style="color:white;"> <?= $name; ?> tasks</h1>
@@ -327,140 +352,143 @@ function completed(btnid){
 
 
 <!-- The Modal -->
-<div id="popup" class="modal1">
+      <div id="popup" class="modal1">
                                                   
 <!-- Modal content -->
-<div class="modal-content1">
-<form class="form-horizontal" name="popup" id="popup" action="">
+        <div class="modal-content1">
+          <form class="form-horizontal" name="popup" id="popup" action="">
 
-<div class="text-center">
-<h1 class="text-uppercase" style="color:black;"> Tasks</h1>
-</div>
-<br>
-<div class="row">
-<input type="hidden"   class="form-control" id="task_idpopup"  name="task_idpopup">
+          <div class="text-center">
+          <h1 class="text-uppercase" style="color:black;"> Tasks</h1>
+          </div>
+          <br>
+          <div class="row">
+                <input type="hidden"   class="form-control" id="task_idpopup"  name="task_idpopup">
 
-    <div class="form-group col-md-2" style="align:left">
-      <label class="control" for="serialnmbr">Serial Number:</label>
-      </div>
-      <div class="form-group col-md-4">
-        <input type="text"   class="form-control" id="serialnmbr"  name="serialnmbr">
-        <input type="hidden"   class="form-control" id="officer_idpopup"  name="officer_idpopup">
+                <div class="form-group col-md-2" style="align:left">
+                  <label class="control" for="serialnmbr">Serial Number:</label>
+                  </div>
+                <div class="form-group col-md-4">
+                  <input type="text"   class="form-control" id="serialnmbr"  name="serialnmbr">
+                  <input type="hidden"   class="form-control" id="officer_idpopup"  name="officer_idpopup">
 
-    </div>
-    <div class="form-group col-md-1">
-      <label class="control" for="taskpopup">Task:</label>
-      </div>
-      <div class="form-group col-md-5 ">
-        <textarea class="form-control"  rows="2" name="taskpopup" id="taskpopup" >
-          </textarea>
-    </div>
-    </div>
+                </div>
+                <div class="form-group col-md-1">
+                <label class="control" for="taskpopup">Task:</label>
+                </div>
+                <div class="form-group col-md-5 ">
+                  <textarea class="form-control"  rows="2" name="taskpopup" id="taskpopup" >
+                    </textarea>
+                </div>
+            </div>
 
-    <div class="row">
+              <div class="row">
 
-<div class="form-group col-md-2">
-  <label class="control" for="allocated_datepopup">Allocated Date:</label>
-  </div>
-  <div class="form-group col-md-4">
-    <input type="text"   class="form-control" readonly id="allocated_datepopup"  name="allocated_datepopup">
-</div>
-<div class="form-group col-md-1">
-  <label class="control" for="deadlinepopup">DeadLine:</label>
-  </div>
-  <div class="form-group col-md-5 ">
-  <input type="text"   class="form-control" readonly id="deadlinepopup"  name="deadlinepopup">
+                  <div class="form-group col-md-2">
+                  <label class="control" for="allocated_datepopup">Allocated Date:</label>
+                  </div>
+                  <div class="form-group col-md-4">
+                    <input type="text"   class="form-control" readonly id="allocated_datepopup"  name="allocated_datepopup">
+                  </div>
+                  <div class="form-group col-md-1">
+                    <label class="control" for="deadlinepopup">DeadLine:</label>
+                    </div>
+                  <div class="form-group col-md-5 ">
+                  <input type="text"   class="form-control" readonly id="deadlinepopup"  name="deadlinepopup">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-md-2">
+                  <label class="control" for="secpopup">Section:</label>
+                  </div>
+                  <div class="form-group col-md-4">
+                  <select class="form-control dynamic"  name="secpopup" id="secpopup">
+                          </select>
+                          <input type='hidden' name= 'secpopup_id' id='secpopup_id' value='0'/>
+                  </div>
+                  <div class="form-group col-md-1">
+                  <label class="control" for="employeepopup">Employee:</label>
+                  </div>
+                  <div class="form-group col-md-5">
+                  <select class="form-control dynamic" name="employeepopup" id="employeepopup">
+                          </select>
+                          <input type='hidden' name= 'officer_id' id='officer_id' value='0'/>
+                  </div>
 
-</div>
-</div>
-<div class="row">
-<div class="form-group col-md-2">
-  <label class="control" for="secpopup">Section:</label>
-  </div>
-  <div class="form-group col-md-4">
-  <select class="form-control dynamic"  name="secpopup" id="secpopup">
-          </select>
-          <input type='hidden' name= 'secpopup_id' id='secpopup_id' value='0'/>
-</div>
-<div class="form-group col-md-1">
-  <label class="control" for="employeepopup">Employee:</label>
-  </div>
-  <div class="form-group col-md-5">
-  <select class="form-control dynamic" name="employeepopup" id="employeepopup">
-          </select>
-          <input type='hidden' name= 'officer_id' id='officer_id' value='0'/>
-</div>
+                  </div>
+                  <div class="row">
 
-</div>
+                    <div class="form-group col-md-2" style="align:left">
+                      <label class="control" for="refpopup_id">Reference:</label>
+                      </div>
+                    <div class="form-group col-md-4">
+                      <input type="text"   class="form-control" id="refpopup"  name="refpopup">
+                  </div>
+                <div class="form-group col-md-1">
+                  <label class="control" id="reminderlbl" name="reminderlbl" for="setReminder">Reminder Note:</label>
+                  </div>
+                  <div class="form-group col-md-5 ">
+                    <textarea readonly class="form-control"  rows="2" name="reminder" id="reminder" ></textarea>
+                </div>
+              </div>
+                    <div name ="addrem" id="addrem"class="row">
 
+                    <div class="form-group col-md-2" style="align:left">
+                      <label class="control" for="rempopup_id">Add Reminder:</label>
+                      </div>
+                    <div class="form-group col-md-4">
+                      <input type="text"   class="form-control" id="rempopup"  name="rempopup">
+                      </div>
 
-<div class="row">
+                    <div class="form-group col-md-2">
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                    <div id="loader"></div>
 
-    <div class="form-group col-md-2" style="align:left">
-      <label class="control" for="refpopup_id">Reference:</label>
-      </div>
-      <div class="form-group col-md-4">
-        <input type="text"   class="form-control" id="refpopup"  name="refpopup">
-    </div>
-    <div class="form-group col-md-1">
-      <label class="control" id="reminderlbl" name="reminderlbl" for="setReminder">Reminder Note:</label>
-      </div>
-      <div class="form-group col-md-5 ">
-        <textarea readonly class="form-control"  rows="2" name="reminder" id="reminder" ></textarea>
-    </div>
-    </div>
-    <div name ="addrem" id="addrem"class="row">
+                      <button type="button" onClick="addNewReminder();" class="btn btn-primary">Add New Reminder</button>
 
-<div class="form-group col-md-2" style="align:left">
-  <label class="control" for="rempopup_id">Add Reminder:</label>
-  </div>
-  <div class="form-group col-md-4">
-    <input type="text"   class="form-control" id="rempopup"  name="rempopup">
-    </div>
+                    </div>
 
-    <div class="form-group col-md-2">
-
-    <button type="button" onClick="addNewReminder();" class="btn btn-primary">Add New Reminder</button>
-
-</div>
-
-</div>
-
+                  </div>
 
 
-    <input type="hidden" name="reminder_status" id="reminder_status" >
 
+                        <input type="hidden" value="0" name="reminder_status" id="reminder_status" >
+                        <input type="hidden" name="title" id="title" >
+                          <input type="hidden" name="task_assign" id="task_assign" >
+                          <input type="hidden" name="all_date" id="all_date" >
+                          <input type="hidden" name="dl" id="dl" >
+                        <br>
+                  <div class="form-group">        
+                    <div class="col-sm-offset-2 col-sm-10"> 
+                    <button type="button" onClick="addReminder();" class="btn btn-info">Add Reminder</button>
 
-      <input type="hidden" name="title" id="title" >
-      <input type="hidden" name="task_assign" id="task_assign" >
-      <input type="hidden" name="all_date" id="all_date" >
-      <input type="hidden" name="dl" id="dl" >
-    <br>
-    <div class="form-group">        
-      <div class="col-sm-offset-2 col-sm-10"> 
-      <button type="button" onClick="addReminder();" class="btn btn-info">Add Reminder</button>
+                      <button type="button" onClick="updateRecord();" class="btn btn-success">Update</button>
+                      <button type="button" onClick="deleteRecord();" class="btn btn-danger">Delete</button>
 
-        <button type="button" onClick="updateRecord();" class="btn btn-success">Update</button>
-        <button type="button" onClick="deleteRecord();" class="btn btn-danger">Delete</button>
-
-        <button type="button" onClick="closeModel();" data-dismiss="modal1" class="btn btn-warning  ">Close</button>
-      </div>
-    </div>
+                      <button type="button" onClick="closeModel();" data-dismiss="modal1" class="btn btn-warning  ">Close</button>
+                    </div>
+                  </div>
   </form>
 </div>
 </div>
 
 
-<div class="row">
-<div class="active-cyan-3 active-cyan-6 col-md-6">
-  <input class="form-control" type="text" name="myno_search" id="myno_search" onkeyup="searchSection(0 ,'myno_search')" placeholder="Search By My Number" aria-label="Search">
-</div>
-<div class="active-cyan-3 active-cyan-6 col-md-6">
-  <input class="form-control" type="text" name="emp_search" id="emp_search" placeholder="Search By Employee" onkeyup="searchSection(4 ,'emp_search')" aria-label="Search">
-</div>
+      <div class="row">
+      
+      <div class="active-cyan-3 active-cyan-3 col-md-3">
+        <input class="form-control" type="text" name="myno_search" id="myno_search" onkeyup="searchSection(0 ,'myno_search')" placeholder="Search By My Number" aria-label="Search">
+      </div>
+      <div class="active-cyan-3 active-cyan-3 col-md-3">
+        <input class="form-control" type="text" name="emp_search" id="emp_search" placeholder="Search By Employee" onkeyup="searchSection(4 ,'emp_search')" aria-label="Search">
+      </div>
+      <div class="active-cyan-6 active-cyan-6 col-md-6">
+      <input type="text" class=" form-inline col-md-2 date" id="startdate" name="startdate" placeholder= "Start Date ">
+      <input type="text" class=" form-inline col-md-2 date" id="enddate" name="enddate" placeholder= "End Date ">
+       
+      <a class="btn btn-primary col-md-2" href="{{route('customer.printpdf', $name)}}" target="_blank">Print PDF</a>
+      </div>
 
-
-</div>
+    </div>
 <br/><br/>
 
      <table class= "table  table-responsive" style="color: '#00004d';"id="tbl_task" name="tbl_task"  >
@@ -526,16 +554,28 @@ if($task->status){
 
 @endforeach
 </tbody>
-</div></div>
-        </table>
-        
 <div id="pager">
       <ul id="pagination" class="pagination-sm"></ul>
 </div>
+</div></div>
+        </table>
+        
+
  
 @endsection
 <b></b>
 <style>
+#loader {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  background: rgba(0,0,0,0.75) url(images/loading2.gif) no-repeat center center;
+  z-index: 10000;
+}
 body {font-family: Arial, Helvetica, sans-serif;}
 
 /* The Modal (background) */

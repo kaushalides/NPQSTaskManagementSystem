@@ -51,4 +51,47 @@ $officer_id =$req->officer_id;$references =$req->references;
         return redirect()->back();
         
      }
+
+     public function addReminders(Request $request){
+        $task_id = $request->taskid;
+        $reminder_note = $request->reminder_note;
+        $date=  Carbon::now()->format('Y-m-d');
+        
+        $tasks_data = DB::table('tasks')->where('tasks.tasks_id','=',$task_id)
+        ->join('employees', function ($join) {
+            $join->on('tasks.officer_id', '=', 'employees.employee_id');
+ 
+        })
+        ->get();
+        foreach($tasks_data as $tasks){
+        $emailto=$tasks->email_address;
+        $title = "Hello, ".$tasks->employee_name;
+        $task_assign = "Your Task is ".$tasks->task
+         ." This is a reminder for you. Reminder note: ".$reminder_note;
+        $all_date = $tasks->allocated_date;
+        $dl = $tasks->dead_line;
+        $emailfrom = "newtask.npqs@gmail.com";
+        $emailsub = "Reminder";
+        
+    }
+
+    $data = array(
+        'emailto'=>$emailto,
+        'title'=>$title,            
+       'task_assign'=>$task_assign,
+        'all_date'=>$all_date,
+        'dl'=>$dl,
+        'emailfrom'=>$emailfrom,
+        'emailsub'=>$emailsub
+    );
+    Mail::send(new SendMail( $data));
+    $date=  Carbon::now()->format('Y-m-d');
+
+          DB::table('reminder')->insert(
+            ['task_id' => $task_id, 'reminder_note' => $reminder_note,
+            'reminder_added_date' => $date]
+          );
+            return redirect()->back();
+
+     }
 }
