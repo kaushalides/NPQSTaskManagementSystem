@@ -9,9 +9,9 @@ use DB;
 
 class CustomerController extends Controller
 {
-    public function printPDF($id,Request $req)
+    public function printPDF(Request $req)
     {
-
+        $id = $req->name;
      
        // This  $data array will be passed to our PDF blade
     if($id =="Ongoing"){

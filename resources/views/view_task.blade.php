@@ -98,9 +98,9 @@ function searchSection($nmbr,$search){
   }}
 function deleteRecord(){
   var taskid = document.getElementById("task_idpopup").value;
-  $.ajax({
+  $.ajax({ 
         type: 'post',
-        url: '/delTask',  
+        url: '{{url("/delTask")}}',
         data: {
         "_token": "{{ csrf_token() }}",
         "taskid": taskid
@@ -129,8 +129,8 @@ function updateRecord(){
   var deadlinepopup   = document.getElementById("deadlinepopup").value;
   var refpopup   = document.getElementById("refpopup").value;
 $.ajax({
-        type: 'post',
-        url: '/updateTask',  
+        type: 'post', 
+        url: '{{url("/updateTask")}}',
         data: {
         "_token": "{{ csrf_token() }}",
         "taskid": taskid,
@@ -188,8 +188,8 @@ function popupModel(btnid){
   $('#employeepopup').find('option').not(':first').remove();
 
   $.ajax({
-        type: 'get',
-        url: '/getSections',      
+        type: 'get',  
+        url: '{{url("/getSections")}}',     
         success: function(response) {
           var length =response.length;
           var option;
@@ -209,7 +209,7 @@ function popupModel(btnid){
 
 
    
-    $.ajax({
+    $.ajax({ 
      url: 'getEmployees/'+section_id,
      type: 'get',
      dataType: 'json',
@@ -231,9 +231,9 @@ function popupModel(btnid){
      error:function(){
      }
   });
-    $.ajax({
+    $.ajax({ 
         type: 'POST',
-        url: '/getReminders',
+        url: '{{url("/getReminders")}}',
         data: {
         "_token": "{{ csrf_token() }}",
         "taskid": taskid
@@ -296,7 +296,7 @@ function addNewReminder(){
   var reminder = document.getElementById("rempopup").value;
   $.ajax({
         type: 'POST',
-        url: '/addReminders',
+        url:  '{{url("/addReminders")}}',
         data: {
         "_token": "{{ csrf_token() }}",
         "taskid": taskid,
@@ -322,9 +322,9 @@ function addNewReminder(){
     }
 function completed(btnid){
   const splitString = btnid.split("_");
-
+alert("here");
   var taskid = document.getElementById("taskid_"+splitString[3]).value;
-  $.ajax({
+  $.ajax({  
         type: 'POST',
         url: '/taskCompleted',
         data: {
@@ -482,8 +482,8 @@ function completed(btnid){
         <input class="form-control" type="text" name="emp_search" id="emp_search" placeholder="Search By Employee" onkeyup="searchSection(4 ,'emp_search')" aria-label="Search">
       </div>
       <div class="input-group col-md-6">
-      <form class=" form-inline" target="_blank" action="{{route('customer.printpdf', $name)}}">
-
+      <form class=" form-inline" target="_blank" action="{{url('/printpdf')}}">
+<input type="hidden" name="name" id="name" value="{{$name}}">
       <input type="text" class=" form-control col-md-3  date" id="startdate" name="startdate" placeholder= "Start Date ">
       <input type="text" class=" form-control col-md-3 date" id="enddate" name="enddate" placeholder= "End Date ">
        

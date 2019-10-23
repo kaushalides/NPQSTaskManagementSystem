@@ -8,7 +8,7 @@
     </div>
     <br/>
     <br/>
-<form class="text-center border border-light p-5"  style="margin-right:15%;margin-left:15%"  method="POST" action="/addsection">
+<form class="text-center border border-light p-5"  style="margin-right:15%;margin-left:15%"  method="POST" action="{{url('/addsection')}}">
 <input type="hidden" name="_token" value="{{ csrf_token() }}">
 <div class="form-group">
       <div class="col-sm-10">

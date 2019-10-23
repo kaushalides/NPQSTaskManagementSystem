@@ -65,19 +65,19 @@
 </style>
 
 <div class="sidenav">
-  <a href="/add">Add Tasks</a>
+  <a href=" {{url('/add')}}">Add Tasks</a>
  
   <button class="dropdown-btn">View Tasks 
     <i class="fa fa-caret-down"></i>
   </button>
   <div class="dropdown-container">
-    <a href="/view_ongoing">Ongoing Tasks</a>
-    <a href="/view_pending">Pending Tasks</a>
-    <a href="/view_completed">Completed Tasks</a>
+    <a href=" {{url('/view_ongoing')}}">Ongoing Tasks</a>
+    <a href="{{url('/view_pending')}}">Pending Tasks</a>
+    <a href="{{url('/view_completed')}}">Completed Tasks</a>
 
   </div>
-  <a href="/add_emp">Add Employees</a>
-  <a href="/add_sec">Add Section</a>
+  <a href="{{url('/add_emp')}}">Add Employees</a>
+  <a href="{{url('/add_sec')}}">Add Section</a>
 
 </div>
 

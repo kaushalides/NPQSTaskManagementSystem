@@ -84,10 +84,10 @@ var emailsub = document.getElementById("emailsub").value;
 var serial_no =document.getElementById("serial_no").value;
 var officer_id =document.getElementById("officer_id").value;
 var references =document.getElementById("references").value;
-
+alert("here");
 $.ajax({
         type: "POST",
-        url: '/sendemail',
+        url: '{{url("/sendemail")}}',
         data: {
         "_token": "{{ csrf_token() }}",
         "emailto": emailto,
@@ -162,7 +162,7 @@ $('#section').change(function(){
    $('#officer').find('option').not(':first').remove();
 
    // AJAX request 
-   $.ajax({
+   $.ajax({ 
      url: 'getEmployees/'+id,
      type: 'get',
      dataType: 'json',
@@ -253,7 +253,7 @@ function closeModel(){
 
 </script>
 
-    <form class="text-center border border-light p-5" method="post" name="addform" id="addform" action="/saveTasks" style="margin-right:8%">
+    <form class="text-center border border-light p-5" method="post" name="addform" id="addform" action="{{url('/saveTasks')}}" style="margin-right:8%">
     {{csrf_field()}}
     <div class="row"> 
 

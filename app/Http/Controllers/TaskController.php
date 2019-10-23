@@ -118,6 +118,7 @@ $name = 'Ongoing';
     }
     public function taskCompleted(Request $req){ 
         $taskid= $req->taskid;
+        dd( $taskid);
         $date=  Carbon::now()->format('Y-m-d');
         if($taskid == 1){
             DB::table('tasks')->where('tasks_id', $taskid)->update([

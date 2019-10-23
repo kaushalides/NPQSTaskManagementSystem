@@ -8,7 +8,7 @@
     </div>
     <br/>
     <br/>
-<form class="text-center border border-light p-5"  style="margin-right:15%;margin-left:5%"  method="POST" action="/addemployee">
+<form class="text-center border border-light p-5"  style="margin-right:15%;margin-left:5%"  method="POST" action="{{url('/addemployee')}}">
 <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
 <div class="row"> 
