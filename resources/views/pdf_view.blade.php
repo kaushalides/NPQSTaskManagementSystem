@@ -10,7 +10,7 @@
  </head>
  <body class="main">
 
-<h1>{{$title}}<h1>
+<h1 class=" text-uppercase">{{$title}}<h1>
 <table class= "table  table-responsive" style="color: '#00004d';"id="tbl_task" name="tbl_task"  >
         <thead class="thead-light">
 

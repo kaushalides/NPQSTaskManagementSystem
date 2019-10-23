@@ -481,11 +481,14 @@ function completed(btnid){
       <div class="active-cyan-3 active-cyan-3 col-md-3">
         <input class="form-control" type="text" name="emp_search" id="emp_search" placeholder="Search By Employee" onkeyup="searchSection(4 ,'emp_search')" aria-label="Search">
       </div>
-      <div class="active-cyan-6 active-cyan-6 col-md-6">
-      <input type="text" class=" form-inline col-md-2 date" id="startdate" name="startdate" placeholder= "Start Date ">
-      <input type="text" class=" form-inline col-md-2 date" id="enddate" name="enddate" placeholder= "End Date ">
+      <div class="input-group col-md-6">
+      <form class=" form-inline" target="_blank" action="{{route('customer.printpdf', $name)}}">
+
+      <input type="text" class=" form-control col-md-3  date" id="startdate" name="startdate" placeholder= "Start Date ">
+      <input type="text" class=" form-control col-md-3 date" id="enddate" name="enddate" placeholder= "End Date ">
        
-      <a class="btn btn-primary col-md-2" href="{{route('customer.printpdf', $name)}}" target="_blank">Print PDF</a>
+      <input type= "submit" class="btn btn-primary col-md-3 " href="" value="Print PDF">
+      </form>
       </div>
 
     </div>

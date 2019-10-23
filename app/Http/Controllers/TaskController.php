@@ -13,6 +13,8 @@ class TaskController extends Controller
 $name = 'Ongoing';
 
        $tasks = DB::table('tasks')
+       
+       ->orderBy('tasks.allocated_date', 'asc')
        ->join('employees', function ($join) {
            $join->on('tasks.officer_id', '=', 'employees.employee_id')
                 ->where('tasks.dead_line','>=',Carbon::now()->format('Y-m-d'))
@@ -25,14 +27,18 @@ $name = 'Ongoing';
     }
 
     public function pendingTask(){
-        $name = 'pending';
+        $name = 'Pending';
         $date=  Carbon::now()->format('Y-m-d');
          $tasks = DB::table('tasks')
          ->join('employees', function ($join) {
              $join->on('tasks.officer_id', '=', 'employees.employee_id')
+         ->orderBy('tasks.allocated_date', 'desc')
+
                   ->where('tasks.dead_line','<=',Carbon::now()->format('Y-m-d'))
                   ->where('tasks.status','=',1);
-         })
+         })                       
+
+
          ->get();
   
   
@@ -42,6 +48,7 @@ $name = 'Ongoing';
         $name = 'Completed';
 
         $tasks = DB::table('tasks')
+        ->orderBy('tasks.allocated_date', 'asc')
         ->join('employees', function ($join) {
             $join->on('tasks.officer_id', '=', 'employees.employee_id')
                  ->where('tasks.status','=',0);

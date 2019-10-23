@@ -9,36 +9,43 @@ use DB;
 
 class CustomerController extends Controller
 {
-    public function printPDF($id)
+    public function printPDF($id,Request $req)
     {
+
+     
        // This  $data array will be passed to our PDF blade
-       //dd($id);
     if($id =="Ongoing"){
        $tasks = DB::table('tasks')
        ->leftjoin('reminder', 'reminder.task_id', '=', 'tasks.tasks_id')
 
        ->join('employees', function ($join) {
            $join->on('tasks.officer_id', '=', 'employees.employee_id')
-                ->where('tasks.dead_line','>=',Carbon::now()->format('Y-m-d'))
+           ->whereBetween('tasks.dead_line', [$req->startdate, $req->enddate])
                 ->where('tasks.status','=',1);
 
        })
        ->get();
 
     }
-    else if($id =="pending"){
+    else if($id =="Pending"){
         $tasks = DB::table('tasks')
-        ->join('employees', function ($join) {
+        ->leftjoin('reminder', 'reminder.task_id', '=', 'tasks.tasks_id')
+
+        ->join('employees', function ($join) use ($req) {
             $join->on('tasks.officer_id', '=', 'employees.employee_id')
-                 ->where('tasks.dead_line','<=',Carbon::now()->format('Y-m-d'))
-                 ->where('tasks.status','=',1);
+            ->whereBetween('tasks.dead_line', [$req->startdate,$req->enddate])
+            ->where('tasks.status','=',1);
         })
         ->get();
     }
     else if($id =="Completed"){
     $tasks = DB::table('tasks')
+    ->leftjoin('reminder', 'reminder.task_id', '=', 'tasks.tasks_id')
+
     ->join('employees', function ($join) {
         $join->on('tasks.officer_id', '=', 'employees.employee_id')
+        ->whereBetween('tasks.dead_line', [$req->startdate,$req->enddate])
+
              ->where('tasks.status','=',0);
 
     })
@@ -46,7 +53,7 @@ class CustomerController extends Controller
 
 }
        $data = [
-          'title' => $id.' Tasks',
+          'title' => $id.' Tasks From '.$req->startdate.' To '.$req->enddate,
           'content' => $tasks
           ];
         
